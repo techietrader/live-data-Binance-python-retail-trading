@@ -11,6 +11,8 @@ import csv
 import datetime as dt
 import requests
 import time
+import pandas
+from binance.websockets import BinanceSocketManager
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 pd.options.mode.chained_assignment = None
@@ -37,10 +39,51 @@ keys = get_api('api_key.txt')
 
 client = Client(keys[0], keys[1])
 
+
+# Lets read the contents of the Tokens.dat
+with open('Tokens.dat','r') as tokens:
+    mess=tokens.read()
+    instruments=eval(mess) 
+
+# List of all the traded tokens on Binance
+total_traded_tokens = [i['symbol'] for i in client.get_all_tickers()]
+
+
+
+'''
+The below command allows us to throw an output on console to notify the user of the invalid token in the 
+Tokens.dat file
+'''
+
+valid_tokens = []
+for token in instruments:
+    if token not in total_traded_tokens:
+        print '"{}" ,Doesnt seem to be a valid pair.'.format(token)
+        print 'However we will continue fetching data for other valid pairs'
+    else:
+        valid_tokens.append(token)
+
+
+
+# Lets create as many instances  as the number of tokens in our valid_tokens list 
+instance_list = ['bm'+str(index) for index, instrument in enumerate(valid_tokens)]
+'''
+Output-
+['bm0', 'bm1', 'bm2', 'bm3', 'bm4', 'bm5', 'bm6', 'bm7', 'bm8', 'bm9']
+'''
+
+'''
+Please Note- If you add new token/pair to Tokens.dat after creating the instance_list, 
+make sure you rerun the above code
+'''
+
+
 # Creating a CSV file to which we will later append rows by calling process_message function
 with open('SymbolValues.csv','w') as f:
     w = csv.writer(f)
     w.writerow(['Date','Dt in Milliscs','Symbol','BestBid','BidQuantity','BestAsk','AskQuantity'])
+
+
 
 # The function writes new rows to a csv file
 
@@ -90,9 +133,9 @@ def process_message(msg):
         with open('SymbolValues.csv','ab')as f:       
             w = csv.writer(f)
             w.writerow([dt.datetime.now(),msg['C'],msg['s'],msg['b'],msg['B'],msg['a'], msg['A']])
-    except IOError:
+    except (IOError, pandas.errors.ParserError):
         print 'Seems you opened the csv file'
-        print 'No problem. However once you close it the recording of data will begin again'
+        print 'Not a problem. However once you close it the recording of data will begin again'
         time.sleep(15)    
             
     return
@@ -103,40 +146,15 @@ def process_message(msg):
 The Below instances are the pairs for which we want data to be collected. You can create new instances and 
 add new pairs as per your preferences
 '''
-# In upcoming version will try to autmate process of adding new instances of pairs directly from Tokens.dat file   
 
-from binance.websockets import BinanceSocketManager
-bm = BinanceSocketManager(client)
-bm.start_symbol_ticker_socket('BNBUSDT',process_message)
-bm.start()
 
-bm2 = BinanceSocketManager(client)
-bm2.start_symbol_ticker_socket('BTCUSDT',process_message)
-bm2.start()
+for instance, instrument in zip(instance_list,instruments):
+    instance = BinanceSocketManager(client)
+    instance.start_symbol_ticker_socket(instrument,process_message)
+    instance.start()
+    
 
-bm3 = BinanceSocketManager(client)
-bm3.start_symbol_ticker_socket('NEOUSDT',process_message)
-bm3.start()
 
-bm4 = BinanceSocketManager(client)
-bm4.start_symbol_ticker_socket('ADAUSDT',process_message)
-bm4.start()
-
-bm5 = BinanceSocketManager(client)
-bm5.start_symbol_ticker_socket('ETHUSDT',process_message)
-bm5.start()
-
-bm6 = BinanceSocketManager(client)
-bm6.start_symbol_ticker_socket('BCCUSDT',process_message)
-bm6.start()
-
-bm7 = BinanceSocketManager(client)
-bm7.start_symbol_ticker_socket('LTCUSDT',process_message)
-bm7.start()
-
-bm8 = BinanceSocketManager(client)
-bm8.start_symbol_ticker_socket('QTUMUSDT',process_message)
-bm8.start()
 
     
 

@@ -41,7 +41,13 @@ Getting the token names that we wish to trade
 with open('Tokens.dat','r') as tokens:
     mess1=tokens.read()
     scrips=eval(mess1)
- 
+
+
+# Extracting Valid Tokens
+total_traded_tokens = [i['symbol'] for i in client.get_all_tickers()]
+
+
+valid_tokens = [i for i in scrips if i in total_traded_tokens]
 
 '''
 Lets define a small function that will extract tokens from pairs. This we want to know our indiviudal token names
@@ -64,7 +70,7 @@ def tokens(my_list):
 
 
 
-tokens_list = tokens(scrips)
+tokens_list = tokens(valid_tokens)
 '''
 Binance has placed some constraints on the Minimum quantity per trade and also on the minimum total value of 
 trade which we call Minimum notional Value and these values are unique and dissimilar for tokens. We need to 
@@ -75,7 +81,7 @@ Thus we create Dictionary object called thresholdRules to save these values.
 
 thresholdRules={}
 
-for item in scrips:
+for item in valid_tokens:
     thresholdRules[item]={'minQty':0.0,'minNotional':0.0} # Initiating with 0.0
     thresholdRules[item]['minQty']=client.get_symbol_info(symbol=item)['filters'][1]['minQty']
     thresholdRules[item]['minNotional']=client.get_symbol_info(symbol=item)['filters'][2]['minNotional']
@@ -114,7 +120,7 @@ with open('Orders.csv','w') as f:
 
 
 def process_message(msg):
-    global thresholdRules, scrips
+    global thresholdRules, valid_tokens
     script_entry=[]
     account_balance={}
     script_total_balance={}
@@ -157,7 +163,7 @@ def process_message(msg):
     
     
     '''
-    # fetches the account balances of all the scrips that we are trading on
+    # fetches the account balances of all the valid_tokens that we are trading on
     if msg['e'] == 'outboundAccountInfo':
         script_entry= [item for item in msg['B'] for scrip in tokens_list  if item['a'] == scrip]
     

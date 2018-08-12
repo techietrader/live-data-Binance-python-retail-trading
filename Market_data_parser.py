@@ -12,17 +12,15 @@ import logging
 logging.basicConfig()
 
 '''
-Tokens.dat file is for the user to edit the trading pair for which he/she wish to trade. Make sure to create 
-an instance in the BinanceWSdatacollecter.py of the pair you want data for to trade.
+Tokens.dat file is for the user to edit the trading pair for which he/she wish to trade or fetch data. 
 
 Tokens.dat - Output
 ['XRPUSDT','BTCUSDT','NEOUSDT','QTUMUSDT','ETHUSDT','BNBUSDT','ADAUSDT','LTCUSDT','BCCUSDT']
 
-If you want to add/remove new tokens simply add them in the bracket. 
+If you want to add new tokens simply add them inside the brackets. 
 This is how it should be in the format after adding new token - 'ETHBTC'
 ['XRPUSDT','BTCUSDT','NEOUSDT','QTUMUSDT','ETHUSDT','BNBUSDT','ADAUSDT','LTCUSDT','BCCUSDT', 'ETHBTC']
 
-Please Note- When you add new token also instantiate it in BinanceWSdatacollecter.py 
 '''
  
 with open('Tokens.dat','r') as tokens:
@@ -34,7 +32,7 @@ with open('Tokens.dat','r') as tokens:
 
 '''
 Lets now figure out for what all pairs we are fetching data for
-This list can be different from the list in Tokens.dat
+This list should be the same as Tokens.dat if the pairs contained are all valid.
 
 '''
 data_pairs=[]
@@ -44,11 +42,10 @@ with open('SymbolValues.csv', 'r') as f:
     for i in q[1:]:
         data_pairs.extend([i.split(',')[2]])
 data_pairs = list(set(data_pairs))        
-# ['ADAUSDT', 'ETHUSDT', 'NEOUSDT', 'LTCUSDT', 'BNBUSDT', 'BTCUSDT', 'QTUMUSDT', 'BCCUSDT']
+# ['ADAUSDT', 'ETHBTC','ETHUSDT', 'NEOUSDT', 'LTCUSDT', 'BNBUSDT', 'BTCUSDT', 'QTUMUSDT', 'BCCUSDT', 'XRPUSDT']
 
-print '{}, these many pairs are not instantiated. Please do it in BinanceWSdatacollecter.py and run this file \
-again.'.format([i for i in instruments if i not in data_pairs])
-print 'Meanwhile Lets proceed with the pairs instantited and are also their in Tokens.dat' 
+print '{}, these many are Invalid Tokens.'.format([i for i in instruments if i not in data_pairs])
+print 'Meanwhile Lets proceed with the valid ones ' 
 
 
 
@@ -63,15 +60,18 @@ Eg- Moving Average, MACD, etc.
 finalValues={}
 for instrument in data_pairs:
     '''
-    You can include as may Values for the key. Make sure you also add that many in process_message function
-    in BinanceWSdatacollecter.py. Details as to what many details can we add are available in the docstring of the
-    function.
+    You can include as may Values [As of now, we have included Best Bid and Best Ask, you can include, CMP, 
+    Best Bid Quantity, Best Ask Quantity, etc] for the key. Make sure you also add that many in process_message 
+    function in BinanceWSdatacollecter.py. Details as to what many details can we add are available in the 
+    docstring of the function.
     '''
     finalValues[instrument]={'bestBid':0.0,'bestAsk':0.0}
     
+    
+    
 '''
 Below code looks for last 9000 rows in SymbolValues.csv (you can keep a small figure) to check for the latest 
-tick data for the selected number of pairs and chooses the latest Best Bid and Ask for each pair. 
+tick data for the selected number of pairs and than chooses the latest Best Bid and Ask of each pair. 
 
 '''    
 while True:
