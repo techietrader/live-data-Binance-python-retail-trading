@@ -1,0 +1,4 @@
+# This is the fromat - ['api', 'secret']. Your keys goes in the below list.
+
+['api_key goes here, inside inverted commas' ,
+'secret_api_key goes here, inside inverted commas']
