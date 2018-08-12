@@ -26,6 +26,10 @@ Pandas_verion -> 0.20.3
 ### Installing and Running
 
 Download files into a folder and using 3 instances of terminal/git bash or Command Prompt window to run the .py files one by one in each instance.
+#### Order is Important
+1. BinanceWSdatacollecter.py
+2. Market_data_parse.py
+3. Orders_Accounts.py
 
 
 ### Steps Involved
@@ -52,6 +56,8 @@ Else:
 ```
 3.	Orders_Accounts.py does the best at recording trades in the Orders.csv and updates the Accounts file with the balances.
 Binance has put a few constraints on the value of the trade order and the minimum quantity to be ordered. This script takes care of those constraints and filters out the tokens which does not meet the constrain requirements. More details inside the file.
+
+	Please note- Orders and Account balances are also pushed via websocket so account file is created only when the first trade takes place after running the scripts.
 
 
 ### What Next
