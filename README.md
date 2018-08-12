@@ -1,4 +1,4 @@
-
+﻿
 ## Welcome to this project
 
 Python Scripts to fetch live streaming cryptocurrency pricing data from Binance.com
@@ -36,8 +36,8 @@ Download files into a folder and using 3 instances of terminal/git bash or Comma
 ![tokens_format](https://user-images.githubusercontent.com/29548935/44007223-260faed4-9eaf-11e8-867c-dfae37ce59e2.PNG)
 3.	SymbolValues.csv, finalValues.txt, Orders.csv, Accounts.txt. These four files are the parameters/output of running the scripts.
 	1.	SymbolValues.csv is generated while running BinanceWSdatacollecter.py. 
-	2.	finalValues.txt contains the Best Bid price and the Best ask price of a particular token/ pair which is updated everytime a new data point comes in. This file is generated and gets appended in Market_data_parser.py
-	3.	Orders.csv and Accounts.txt records your number of orders executed and the balance details using the secret api key which happens in the script Orders_Accounts.py
+	2.	finalValues.txt contains the Best Bid price and the Best ask price of a particular token/ pair which is updated everytime a new data point comes in. This file is generated and gets appended in Market_data_parser.py.
+	3.	Orders.csv and Accounts.txt records your number of orders executed and the balance details using the secret api key which happens in the script Orders_Accounts.py.
 
  
 ### About the three scripts
