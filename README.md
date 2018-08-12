@@ -31,7 +31,9 @@ Download files into a folder and using 3 instances of terminal/git bash or Comma
 ### Steps Involved
 
 1.	Jot down your api and the secret as shown in the image below
+![api_key_format](https://user-images.githubusercontent.com/29548935/44007222-2554801e-9eaf-11e8-9bd5-df7b5b1eb7a2.PNG)
 2.	Open the Tokens.dat file and put in the trading pairs you either wish to trade or wants to keep a watch on. Keep on adding tokens one after another in the list. Here is the image –
+![tokens_format](https://user-images.githubusercontent.com/29548935/44007223-260faed4-9eaf-11e8-867c-dfae37ce59e2.PNG)
 3.	SymbolValues.csv, finalValues.txt, Orders.csv, Accounts.txt. These four files are the parameters/output of running the scripts.
 	1.	SymbolValues.csv is generated while running BinanceWSdatacollecter.py. 
 	2.	finalValues.txt contains the Best Bid price and the Best ask price of a particular token/ pair which is updated everytime a new data point comes in. This file is generated and gets appended in Market_data_parser.py
